@@ -19,7 +19,17 @@ socketIO.on('connection', (socket) => {
  
   socket.on('userId', (userId) => {
     console.log(`User ${userId} connected`);
+    let ids =  arr.map((a) => a.userId)
+
     arr.push({id: socket.id, userId: userId})
+    socketIO.emit('newUserResponse', arr);
+    // if (ids.includes(userId)) {
+
+    // } else {
+    //   arr.push({id: socket.id, userId: userId})
+    //   socketIO.emit('newUserResponse', arr);
+    // }
+   
   });
 
    //sends the message to all the users on the server
@@ -62,13 +72,14 @@ socketIO.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log(': A user disconnected');
     //Updates the list of users when a user disconnects from the server
-    users = users.filter((user) => user.socketID !== socket.id)
+    arr = arr.filter((user) => user.id !== socket.id)
     // console.log(users);
     //Sends the list of users to the client
-    socketIO.emit('newUserResponse', users);
+    socketIO.emit('userLogoutResponse', arr);
  
     socket.disconnect();
   });
+
 
 });
 
